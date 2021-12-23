@@ -4,13 +4,16 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
 #include "Hittable.h"
 #include "Ray.h"
+#include <memory>
+#include <vector>
 
-class HittableList final: public Hittable{
+class HittableList final : public Hittable {
     std::vector<std::shared_ptr<Hittable>> objects;
+
+public:
+    const std::vector<std::shared_ptr<Hittable>> &getObjects() const;
 
 public:
     void add(std::shared_ptr<Hittable> obj) {
@@ -19,4 +22,6 @@ public:
 
     std::optional<HitRecord> intersect(
             const Ray &ray, value_t min_dist, value_t max_dist) const override;
+
+    std::optional<AABB> boundingBox(value_t time0, value_t time1) const override;
 };

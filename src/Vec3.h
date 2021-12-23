@@ -106,9 +106,17 @@ Vec3 Vec3::random(value_t min, value_t max) {
 }
 
 Vec3 Vec3::randomInHemisphere(const Vec3 &normal) {
-    auto v = Vec3::random();
+    auto v = Vec3::randomUnitVec();
     if (v.dot(normal) > 0) return v;
     return -v;
+}
+
+Vec3 Vec3::randomUnitVec() {
+    auto v = Vec3::random();
+    while (v.length_squared() >= 1) {
+        v = Vec3::random();
+    }
+    return v.normalized();
 }
 
 std::ostream& operator<<(std::ostream& os, const Vec3& v);

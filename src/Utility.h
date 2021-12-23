@@ -29,24 +29,36 @@ inline value_t degreesToRadians(value_t deg) {
     return deg * a;
 }
 
-inline value_t random_value_t(value_t min = 0.0, value_t max = 1.0) {
-    static std::uniform_real_distribution<value_t> distribution(min, max);
-    static std::mt19937_64 generator; // NOLINT(cert-msc51-cpp)
+inline value_t random_value_t() {
+    thread_local static std::uniform_real_distribution<value_t> distribution(0, 1);
+    thread_local static std::mt19937_64 generator; // NOLINT(cert-msc51-cpp)
     return distribution(generator);
 }
 
-constexpr auto range(size_t n) {
+inline value_t random_value_t(value_t min, value_t max) {
+    return min + (max-min) * random_value_t();
+}
+
+inline int random_int(int min, int max) {
+    return static_cast<int>(random_value_t(min, max+1));
+}
+
+constexpr auto range(size_t start, size_t end) {
     struct iterator {
         size_t i;
         void operator++() { ++i; }
+        void operator+=(size_t j) { i+=j; }
         bool operator!=(const iterator& rhs) const { return i != rhs.i; }
         const size_t &operator*() const { return i; }
     };
     struct wrapper {
-        size_t n;
-        auto begin() { return iterator{0}; }
-        auto end()   { return iterator{n}; }
+        size_t start_;
+        size_t end_;
+        auto begin() { return iterator{start_}; }
+        auto end()   { return iterator{end_}; }
     };
-    return wrapper{n};
+    return wrapper{start, end};
 }
+
+constexpr auto range(size_t n) { return range(0, n); }
 

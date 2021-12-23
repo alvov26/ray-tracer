@@ -30,5 +30,24 @@ std::optional<HitRecord> Sphere::intersect(const Ray &ray, value_t min_dist, val
     auto outward_normal = (result.point - center_) / radius_;
     result.setFaceNormal(ray, outward_normal);
 
+    auto [u, v] = getSphereUV(outward_normal);
+    result.u = u;
+    result.v = v;
+
     return result;
+}
+
+std::optional<AABB> Sphere::boundingBox(value_t time0, value_t time1) const {
+    return AABB{
+        center_ - Vec3(radius_, radius_, radius_),
+        center_ + Vec3(radius_, radius_, radius_)
+    };
+}
+
+std::pair<value_t, value_t> getSphereUV(const Vec3 &n) {
+    auto theta = std::acos(-n.x());
+    auto phi = atan2(-n.z(), n.x()) + kPi;
+    auto u = phi / (2*kPi);
+    auto v = asin(n.y()) / kPi + 0.5;
+    return {u, v};
 }
