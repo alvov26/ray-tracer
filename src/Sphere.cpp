@@ -4,7 +4,7 @@
 
 #include "Sphere.h"
 
-std::optional<HitRecord> Sphere::intersect(const Ray &ray, value_t min_dist, value_t max_dist) const {
+std::optional<HitRecord> Sphere::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
     auto oc = ray.origin() - center_;
 
     auto a = ray.direction().length_squared();
@@ -37,14 +37,14 @@ std::optional<HitRecord> Sphere::intersect(const Ray &ray, value_t min_dist, val
     return result;
 }
 
-std::optional<AABB> Sphere::boundingBox(value_t time0, value_t time1) const {
+std::optional<AABB> Sphere::boundingBox(FloatT time0, FloatT time1) const {
     return AABB{
         center_ - Vec3(radius_, radius_, radius_),
         center_ + Vec3(radius_, radius_, radius_)
     };
 }
 
-std::pair<value_t, value_t> getSphereUV(const Vec3 &n) {
+std::pair<FloatT, FloatT> getSphereUV(const Vec3 &n) {
     auto theta = std::acos(-n.x());
     auto phi = atan2(-n.z(), n.x()) + kPi;
     auto u = phi / (2*kPi);

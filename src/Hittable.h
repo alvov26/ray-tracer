@@ -14,8 +14,8 @@ class Material;
 struct HitRecord {
     Point3 point;
     Vec3 normal;
-    value_t distance;
-    value_t u, v;
+    FloatT distance;
+    FloatT u, v;
     bool front_face;
     std::shared_ptr<Material> material;
 
@@ -28,12 +28,12 @@ struct HitRecord {
 class Hittable {
 public:
     virtual std::optional<HitRecord> intersect(
-            const Ray &ray, value_t min_dist, value_t max_dist) const = 0;
+            const Ray &ray, FloatT min_dist, FloatT max_dist) const = 0;
 
     virtual std::optional<HitRecord> intersect(const Ray &ray) const final {
         return intersect(ray, kEpsilon, kInfinity);
     }
 
-    virtual std::optional<AABB> boundingBox(value_t time0, value_t time1) const = 0;
+    virtual std::optional<AABB> boundingBox(FloatT time0, FloatT time1) const = 0;
     ~Hittable() = default;
 };

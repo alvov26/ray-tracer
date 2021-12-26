@@ -5,7 +5,7 @@
 #include "BVH_Node.h"
 #include <algorithm>
 
-std::optional<HitRecord> BVH_Node::intersect(const Ray &ray, value_t min_dist, value_t max_dist) const {
+std::optional<HitRecord> BVH_Node::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
     if (!box.doesIntersect(ray, min_dist, max_dist)) return {};
 
     auto left_hit = left->intersect(ray, min_dist, max_dist);
@@ -14,17 +14,17 @@ std::optional<HitRecord> BVH_Node::intersect(const Ray &ray, value_t min_dist, v
     return right_hit ? right_hit : left_hit;
 }
 
-std::optional<AABB> BVH_Node::boundingBox(value_t time0, value_t time1) const {
+std::optional<AABB> BVH_Node::boundingBox(FloatT time0, FloatT time1) const {
     return box;
 }
 
-BVH_Node::BVH_Node(const HittableList &list, value_t time0, value_t time1)
+BVH_Node::BVH_Node(const HittableList &list, FloatT time0, FloatT time1)
     : BVH_Node(list.getObjects(), 0, list.getObjects().size(), time0, time1) {}
 
 BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Hittable>> &list,
-                   size_t start, size_t end, value_t time0, value_t time1) {
+                   size_t start, size_t end, FloatT time0, FloatT time1) {
     auto objects = list;
-    auto comparator = [i = random_int(0, 2)](auto &lhs, auto &rhs) {
+    auto comparator = [i = randomInt(0, 2)](auto &lhs, auto &rhs) {
         auto box_left = lhs->boundingBox(0, 0);
         auto box_right = rhs->boundingBox(0, 0);
 

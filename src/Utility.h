@@ -8,7 +8,7 @@
 #include <cmath>
 #include <random>
 
-using value_t = double;
+using FloatT = double;
 
 #if !defined(NDEBUG)
 constexpr auto kDebug = true;
@@ -16,31 +16,31 @@ constexpr auto kDebug = true;
 constexpr auto kDebug = false;
 #endif
 
-constexpr auto kEpsilon  = std::numeric_limits<value_t>::epsilon() * 1000;
-constexpr auto kInfinity = std::numeric_limits<value_t>::infinity();
+constexpr auto kEpsilon  = std::numeric_limits<FloatT>::epsilon() * 1000;
+constexpr auto kInfinity = std::numeric_limits<FloatT>::infinity();
 constexpr auto kPi = M_PI;
 
-inline value_t clamp(value_t x, value_t min, value_t max) {
+inline FloatT clamp(FloatT x, FloatT min, FloatT max) {
     return x < min ? 0 : x > max ? 1 : x;
 }
 
-inline value_t degreesToRadians(value_t deg) {
+inline FloatT degreesToRadians(FloatT deg) {
     constexpr auto a = kPi / 180;
     return deg * a;
 }
 
-inline value_t random_value_t() {
-    thread_local static std::uniform_real_distribution<value_t> distribution(0, 1);
+inline FloatT randomFloatT() {
+    thread_local static std::uniform_real_distribution<FloatT> distribution(0, 1);
     thread_local static std::mt19937_64 generator; // NOLINT(cert-msc51-cpp)
     return distribution(generator);
 }
 
-inline value_t random_value_t(value_t min, value_t max) {
-    return min + (max-min) * random_value_t();
+inline FloatT randomFloatT(FloatT min, FloatT max) {
+    return min + (max-min) * randomFloatT();
 }
 
-inline int random_int(int min, int max) {
-    return static_cast<int>(random_value_t(min, max+1));
+inline int randomInt(int min, int max) {
+    return static_cast<int>(randomFloatT(min, max + 1));
 }
 
 constexpr auto range(size_t start, size_t end) {

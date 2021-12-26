@@ -18,7 +18,7 @@ public:
     Point3 min() const { return minimum_; }
     Point3 max() const { return maximum_; }
 
-    bool doesIntersect(const Ray &ray, value_t min_dist, value_t max_dist) const {
+    bool doesIntersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
         for (auto i : range(3)) {
             auto invD = 1.0f / ray.direction()[i];
             auto t0 = (min()[i] - ray.origin()[i]) * invD;

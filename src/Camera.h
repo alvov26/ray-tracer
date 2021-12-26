@@ -23,20 +23,20 @@ class Camera {
     Vec3 vertical_;
 
     Vec3 w, u, v;
-    value_t lens_radius;
-    value_t start_time_, end_time_;
+    FloatT lens_radius;
+    FloatT start_time_, end_time_;
 
 public:
     Camera(
             Point3 look_from,
             Point3 look_at,
             Vec3 up_vec,
-            value_t fov,
-            value_t aspect_ratio,
-            value_t aperture,
-            value_t focus_dist,
-            value_t start_time = 0,
-            value_t end_time = 0) : start_time_(start_time), end_time_(end_time) {
+            FloatT fov,
+            FloatT aspect_ratio,
+            FloatT aperture,
+            FloatT focus_dist,
+            FloatT start_time = 0,
+            FloatT end_time = 0) : start_time_(start_time), end_time_(end_time) {
         auto theta = degreesToRadians(fov);
         auto h = tan(theta / 2);
 
@@ -55,12 +55,12 @@ public:
         lens_radius = aperture / 2;
     }
 
-    Ray getRay(value_t s, value_t t) const {
+    Ray getRay(FloatT s, FloatT t) const {
         auto rd = randomVecInUnitDisk() * lens_radius;
         auto offset = (u * rd.x()) + (v * rd.y());
         return {
                 origin_ + offset,
                 (lower_left_corner_ + horizontal_ * s + vertical_ * t - origin_ - offset).normalized(),
-                random_value_t(start_time_, end_time_)};
+                randomFloatT(start_time_, end_time_)};
     }
 };

@@ -20,7 +20,7 @@ class Material {
 public:
     virtual std::optional<ScatterRecord> scatter(
             const Ray &ray, const HitRecord &hit) const = 0;
-    virtual Colour emit(value_t u, value_t v, const Point3 &p) const {
+    virtual Colour emit(FloatT u, FloatT v, const Point3 &p) const {
         return {0, 0, 0};
     }
     virtual ~Material() = default;
@@ -38,7 +38,7 @@ public:
         if constexpr (UseHemisphere) {
             scatter_direction = Vec3::randomInHemisphere(hit.normal);
         } else {
-            scatter_direction = hit.normal + Vec3::randomUnitVec();
+            scatter_direction = hit.normal + Vec3::randomInSphere();
             if (scatter_direction.isNearZero()) scatter_direction = hit.normal;
             else
                 scatter_direction = scatter_direction.normalized();
@@ -56,14 +56,14 @@ Vec3 reflect(const Vec3 &vec, const Vec3 &normal) {
 
 class Metal final : public Material {
     std::shared_ptr<Texture> albedo_;
-    value_t fuzz_;
+    FloatT fuzz_;
 
 public:
-    Metal(std::shared_ptr<Texture> a, value_t fuzz) : albedo_(std::move(a)), fuzz_(fuzz < 1 ? fuzz : 1) {}
+    Metal(std::shared_ptr<Texture> a, FloatT fuzz) : albedo_(std::move(a)), fuzz_(fuzz < 1 ? fuzz : 1) {}
 
     std::optional<ScatterRecord> scatter(const Ray &ray, const HitRecord &hit) const override {
         auto direction = reflect(ray.direction(), hit.normal).normalized();
-        direction = direction + Vec3::randomUnitVec() * fuzz_;
+        direction = direction + Vec3::randomInSphere() * fuzz_;
         if (direction.dot(hit.normal) > 0) return ScatterRecord{
                 Ray(hit.point, direction, ray.time()),
                 albedo_->value(hit.u, hit.v, hit.point)};
@@ -71,29 +71,29 @@ public:
     }
 };
 
-Vec3 refract(const Vec3 &vec, const Vec3 &normal, value_t refractive_ratio) {
-    auto cos_theta = std::min<value_t>(normal.dot(-vec), 1.0);
+Vec3 refract(const Vec3 &vec, const Vec3 &normal, FloatT refractive_ratio) {
+    auto cos_theta = std::min<FloatT>(normal.dot(-vec), 1.0);
     auto r_perp = (vec + normal * cos_theta) * refractive_ratio;
     auto r_para = normal * -std::sqrt(std::abs(1.0 - r_perp.length_squared()));
     return r_perp + r_para;
 }
 
 class Dielectric final : public Material {
-    value_t refractive_index_;
+    FloatT refractive_index_;
 
 public:
-    explicit Dielectric(value_t refractive_index)
+    explicit Dielectric(FloatT refractive_index)
         : refractive_index_(refractive_index) {}
 
     std::optional<ScatterRecord> scatter(const Ray &ray, const HitRecord &hit) const override {
-        value_t refraction_ratio = hit.front_face ? 1 / refractive_index_ : refractive_index_;
+        FloatT refraction_ratio = hit.front_face ? 1 / refractive_index_ : refractive_index_;
 
-        auto cos_theta = std::min<value_t>(hit.normal.dot(-ray.direction()), 1.0);
+        auto cos_theta = std::min<FloatT>(hit.normal.dot(-ray.direction()), 1.0);
         auto sin_theta = std::sqrt(1 - cos_theta * cos_theta);
 
         auto cannot_refract = sin_theta * refraction_ratio > 1;
         Vec3 scattered;
-        if (cannot_refract || reflectance(cos_theta, refraction_ratio) > random_value_t()) {// only reflect
+        if (cannot_refract || reflectance(cos_theta, refraction_ratio) > randomFloatT()) {// only reflect
             scattered = reflect(ray.direction(), hit.normal);
         } else {// can refract
             scattered = refract(ray.direction(), hit.normal, refraction_ratio);
@@ -105,7 +105,7 @@ public:
     }
 
 private:
-    static double reflectance(value_t cosine, value_t ref_idx) {
+    static double reflectance(FloatT cosine, FloatT ref_idx) {
         // Use Schlick's approximation for reflectance.
         auto r0 = (1 - ref_idx) / (1 + ref_idx);
         r0 = r0 * r0;
@@ -124,7 +124,7 @@ public:
         return {};
     }
 
-    Colour emit(value_t u, value_t v, const Point3 &p) const override {
+    Colour emit(FloatT u, FloatT v, const Point3 &p) const override {
         return emit_->value(u, v, p);
     }
 };

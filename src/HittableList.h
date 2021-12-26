@@ -16,12 +16,12 @@ public:
     const std::vector<std::shared_ptr<Hittable>> &getObjects() const;
 
 public:
-    void add(std::shared_ptr<Hittable> obj) {
+    void add(const std::shared_ptr<Hittable>& obj) {
         objects.push_back(obj);
     }
 
     std::optional<HitRecord> intersect(
-            const Ray &ray, value_t min_dist, value_t max_dist) const override;
+            const Ray &ray, FloatT min_dist, FloatT max_dist) const override;
 
-    std::optional<AABB> boundingBox(value_t time0, value_t time1) const override;
+    std::optional<AABB> boundingBox(FloatT time0, FloatT time1) const override;
 };

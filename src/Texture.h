@@ -3,13 +3,15 @@
 //
 
 #pragma once
+#include <utility>
+
 #include "Utility.h"
 #include "Vec3.h"
 #include "stbi_image.h"
 
 class Texture {
 public:
-    virtual Colour value(value_t u, value_t v, const Point3& p) const = 0;
+    virtual Colour value(FloatT u, FloatT v, const Point3& p) const = 0;
     virtual ~Texture() = default;
 };
 
@@ -17,9 +19,9 @@ class SolidColour : public Texture {
     Colour colour_;
 
 public:
-    SolidColour(const Colour &colour) : colour_(colour) {}
+    explicit SolidColour(const Colour &colour) : colour_(colour) {}
 
-    Colour value(value_t u, value_t v, const Point3& p) const override {
+    Colour value(FloatT u, FloatT v, const Point3& p) const override {
         return colour_;
     }
 };
@@ -27,7 +29,7 @@ public:
 class CheckerTexture : public Texture {
 public:
     CheckerTexture(std::shared_ptr<Texture> even, std::shared_ptr<Texture> odd)
-    : even_(even), odd_(odd) {}
+    : even_(std::move(even)), odd_(std::move(odd)) {}
 
     CheckerTexture(Colour c1, Colour c2)
     : even_(std::make_shared<SolidColour>(c1)) , odd_(std::make_shared<SolidColour>(c2)) {}
@@ -39,8 +41,8 @@ public:
     }
 
 public:
-    std::shared_ptr<Texture> odd_;
     std::shared_ptr<Texture> even_;
+    std::shared_ptr<Texture> odd_;
 };
 
 class ImageTexture : public Texture {
@@ -48,7 +50,7 @@ class ImageTexture : public Texture {
 public:
     explicit ImageTexture(Image i) : image_(std::move(i)) {}
 
-    Colour value(value_t u, value_t v, const Point3 &p) const override {
+    Colour value(FloatT u, FloatT v, const Point3 &p) const override {
         u = clamp(u, 0.0, 1.0);
         v = 1.0 - clamp(v, 0.0, 1.0);
 

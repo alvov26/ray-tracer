@@ -12,18 +12,18 @@
 
 class Sphere final: public Hittable {
     Point3 center_;
-    value_t radius_;
+    FloatT radius_;
 
     std::shared_ptr<Material> material_;
 
 public:
-    Sphere(Point3 center, value_t radius, std::shared_ptr<Material> material)
+    Sphere(Point3 center, FloatT radius, std::shared_ptr<Material> material)
     : center_(center), radius_(radius), material_(std::move(material)) {}
 
     std::optional<HitRecord> intersect(
-            const Ray& ray, value_t min_dist, value_t max_dist) const override;
+            const Ray& ray, FloatT min_dist, FloatT max_dist) const override;
 
-    std::optional<AABB> boundingBox(value_t time0, value_t time1) const override;
+    std::optional<AABB> boundingBox(FloatT time0, FloatT time1) const override;
 };
 
-std::pair<value_t, value_t> getSphereUV(const Vec3& p);
+std::pair<FloatT, FloatT> getSphereUV(const Vec3& p);

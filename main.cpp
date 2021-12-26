@@ -23,14 +23,14 @@ Colour castRay(const Ray& ray, const Hittable& hittable, const Colour& backgroun
     return emitted + scattered->attenuation * castRay(scattered->ray, hittable, background, depth - 1);
 }
 
-Colour gammaCorrection(Colour c, value_t gamma = 2){
+Colour gammaCorrection(Colour c, FloatT gamma = 2){
     return { std::sqrt(c.x()), std::sqrt(c.y()), std::sqrt(c.z()) };
 }
 
 int main() {
     const auto width  = kDebug ? 640 : 1280;
     const auto height = kDebug ? 360 : 720;
-    const auto aspect_ratio = value_t(width) / value_t(height);
+    const auto aspect_ratio = FloatT(width) / FloatT(height);
     const auto samples_per_pixel = kDebug ? 100 : 3000;
     const auto max_depth = kDebug ? 50 : 100;
 
@@ -93,8 +93,8 @@ int main() {
         for (auto y : range(height)) {
             auto colour = Colour();
             for (auto s : range(samples_per_pixel)){
-                auto h = (value_t(x) + random_value_t()) / (width-1);
-                auto v = (value_t(height - y) + random_value_t()) / (height-1);
+                auto h = (FloatT(x) + randomFloatT()) / (width-1);
+                auto v = (FloatT(height - y) + randomFloatT()) / (height-1);
                 auto ray = camera.getRay(h, v);
                 colour = colour + castRay(ray, world, background, max_depth);
             }
@@ -115,8 +115,8 @@ int main() {
                     for (auto y: range(height)) {
                         auto colour = Colour();
                         for (auto s: range(samples_per_pixel)) {
-                            auto h = (value_t(x) + random_value_t()) / (width - 1);
-                            auto v = (value_t(height - y) + random_value_t()) / (height - 1);
+                            auto h = (FloatT(x) + randomFloatT()) / (width - 1);
+                            auto v = (FloatT(height - y) + randomFloatT()) / (height - 1);
                             auto ray = camera.getRay(h, v);
                             colour = colour + castRay(ray, world, background, max_depth);
                         }

@@ -5,7 +5,7 @@
 #include "MovingSphere.h"
 #include "Sphere.h"
 
-std::optional<HitRecord> MovingSphere::intersect(const Ray &ray, value_t min_dist, value_t max_dist) const {
+std::optional<HitRecord> MovingSphere::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
     auto center = this->center(ray.time());
     auto oc = ray.origin() - center;
 
@@ -39,7 +39,7 @@ std::optional<HitRecord> MovingSphere::intersect(const Ray &ray, value_t min_dis
     return result;
 }
 
-std::optional<AABB> MovingSphere::boundingBox(value_t time0, value_t time1) const {
+std::optional<AABB> MovingSphere::boundingBox(FloatT time0, FloatT time1) const {
     auto box1 = AABB{
             center(time0) - Vec3(radius_, radius_, radius_),
             center(time0) + Vec3(radius_, radius_, radius_),

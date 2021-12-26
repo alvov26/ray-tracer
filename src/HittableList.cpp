@@ -4,7 +4,7 @@
 
 #include "HittableList.h"
 
-std::optional<HitRecord> HittableList::intersect(const Ray &ray, value_t min_dist, value_t max_dist) const {
+std::optional<HitRecord> HittableList::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
     auto result = std::optional<HitRecord>{};
     auto closest_distance = kInfinity;
     for (const auto &obj : objects) {
@@ -18,7 +18,7 @@ std::optional<HitRecord> HittableList::intersect(const Ray &ray, value_t min_dis
     return result;
 }
 
-std::optional<AABB> HittableList::boundingBox(value_t time0, value_t time1) const {
+std::optional<AABB> HittableList::boundingBox(FloatT time0, FloatT time1) const {
     if (objects.empty()) return {};
     auto box = std::optional<AABB>{};
     for (const auto &obj : objects) {
