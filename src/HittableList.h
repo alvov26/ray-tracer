@@ -16,7 +16,7 @@ public:
     const std::vector<std::shared_ptr<Hittable>> &getObjects() const;
 
 public:
-    void add(const std::shared_ptr<Hittable>& obj) {
+    void add(const std::shared_ptr<Hittable> &obj) {
         objects.push_back(obj);
     }
 

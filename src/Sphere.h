@@ -6,11 +6,11 @@
 
 #include <utility>
 
-#include "Vec3.h"
-#include "Ray.h"
 #include "Hittable.h"
+#include "Ray.h"
+#include "Vec3.h"
 
-class Sphere final: public Hittable {
+class Sphere final : public Hittable {
     Point3 center_;
     FloatT radius_;
 
@@ -18,12 +18,12 @@ class Sphere final: public Hittable {
 
 public:
     Sphere(Point3 center, FloatT radius, std::shared_ptr<Material> material)
-    : center_(center), radius_(radius), material_(std::move(material)) {}
+        : center_(center), radius_(radius), material_(std::move(material)) {}
 
     std::optional<HitRecord> intersect(
-            const Ray& ray, FloatT min_dist, FloatT max_dist) const override;
+            const Ray &ray, FloatT min_dist, FloatT max_dist) const override;
 
     std::optional<AABB> boundingBox(FloatT time0, FloatT time1) const override;
 };
 
-std::pair<FloatT, FloatT> getSphereUV(const Vec3& p);
+std::pair<FloatT, FloatT> getSphereUV(const Vec3 &p);

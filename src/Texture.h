@@ -11,7 +11,7 @@
 
 class Texture {
 public:
-    virtual Colour value(FloatT u, FloatT v, const Point3& p) const = 0;
+    virtual Colour value(FloatT u, FloatT v, const Point3 &p) const = 0;
     virtual ~Texture() = default;
 };
 
@@ -21,7 +21,7 @@ class SolidColour : public Texture {
 public:
     explicit SolidColour(const Colour &colour) : colour_(colour) {}
 
-    Colour value(FloatT u, FloatT v, const Point3& p) const override {
+    Colour value(FloatT u, FloatT v, const Point3 &p) const override {
         return colour_;
     }
 };
@@ -29,15 +29,16 @@ public:
 class CheckerTexture : public Texture {
 public:
     CheckerTexture(std::shared_ptr<Texture> even, std::shared_ptr<Texture> odd)
-    : even_(std::move(even)), odd_(std::move(odd)) {}
+        : even_(std::move(even)), odd_(std::move(odd)) {}
 
     CheckerTexture(Colour c1, Colour c2)
-    : even_(std::make_shared<SolidColour>(c1)) , odd_(std::make_shared<SolidColour>(c2)) {}
+        : even_(std::make_shared<SolidColour>(c1)), odd_(std::make_shared<SolidColour>(c2)) {}
 
-    Colour value(double u, double v, const Point3& p) const override {
-        auto sines = sin(10*p.x()) * sin(10*p.y()) * sin(10*p.z());
+    Colour value(double u, double v, const Point3 &p) const override {
+        auto sines = sin(10 * p.x()) * sin(10 * p.y()) * sin(10 * p.z());
         if (sines < 0) return odd_->value(u, v, p);
-        else return even_->value(u, v, p);
+        else
+            return even_->value(u, v, p);
     }
 
 public:
@@ -47,6 +48,7 @@ public:
 
 class ImageTexture : public Texture {
     Image image_;
+
 public:
     explicit ImageTexture(Image i) : image_(std::move(i)) {}
 
@@ -60,10 +62,9 @@ public:
         auto i = static_cast<size_t>(u * width);
         auto j = static_cast<size_t>(v * height);
 
-        if (i >= width)  i = width-1;
-        if (j >= height) j = height-1;
+        if (i >= width) i = width - 1;
+        if (j >= height) j = height - 1;
 
         return image_.at(i, j).toVec3();
     }
 };
-

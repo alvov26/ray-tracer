@@ -11,11 +11,11 @@ std::optional<HitRecord> Sphere::intersect(const Ray &ray, FloatT min_dist, Floa
     auto half_b = ray.direction().dot(oc);
     auto c = oc.length_squared() - radius_ * radius_;
 
-    auto discriminant = half_b*half_b - a*c;
+    auto discriminant = half_b * half_b - a * c;
     if (discriminant < 0) return {};
 
     auto sqrt_d = std::sqrt(discriminant);
-    auto root = (-half_b - sqrt_d) / a; // also distance
+    auto root = (-half_b - sqrt_d) / a;// also distance
     if (root < min_dist || root > max_dist) {
         root = (-half_b + sqrt_d) / a;
         if (root < min_dist || root > max_dist)
@@ -39,15 +39,14 @@ std::optional<HitRecord> Sphere::intersect(const Ray &ray, FloatT min_dist, Floa
 
 std::optional<AABB> Sphere::boundingBox(FloatT time0, FloatT time1) const {
     return AABB{
-        center_ - Vec3(radius_, radius_, radius_),
-        center_ + Vec3(radius_, radius_, radius_)
-    };
+            center_ - Vec3(radius_, radius_, radius_),
+            center_ + Vec3(radius_, radius_, radius_)};
 }
 
 std::pair<FloatT, FloatT> getSphereUV(const Vec3 &n) {
     auto theta = std::acos(-n.x());
     auto phi = atan2(-n.z(), n.x()) + kPi;
-    auto u = phi / (2*kPi);
+    auto u = phi / (2 * kPi);
     auto v = asin(n.y()) / kPi + 0.5;
     return {u, v};
 }

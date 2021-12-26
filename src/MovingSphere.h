@@ -6,30 +6,28 @@
 
 #include <utility>
 
-#include "Vec3.h"
-#include "Ray.h"
 #include "Hittable.h"
+#include "Ray.h"
+#include "Vec3.h"
 
-class MovingSphere final: public Hittable {
+class MovingSphere final : public Hittable {
     Point3 center_;
     FloatT radius_;
 
     Vec3 velocity_;
 
     std::shared_ptr<Material> material_;
+
 public:
     MovingSphere(
             Point3 center,
             FloatT radius,
             Vec3 velocity,
             std::shared_ptr<Material> material)
-    : center_(center)
-    , radius_(radius)
-    , velocity_(velocity)
-    , material_(std::move(material)) {}
+        : center_(center), radius_(radius), velocity_(velocity), material_(std::move(material)) {}
 
     std::optional<HitRecord> intersect(
-            const Ray& ray, FloatT min_dist, FloatT max_dist) const override;
+            const Ray &ray, FloatT min_dist, FloatT max_dist) const override;
 
     Point3 center(FloatT time) const { return center_ + velocity_ * time; }
 
