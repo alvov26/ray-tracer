@@ -31,8 +31,8 @@ inline FloatT degreesToRadians(FloatT deg) {
 }
 
 inline FloatT randomFloatT() {
-    thread_local static std::uniform_real_distribution<FloatT> distribution(0, 1);
-    thread_local static std::mt19937_64 generator;// NOLINT(cert-msc51-cpp)
+    static std::uniform_real_distribution<FloatT> distribution(0, 1);
+    static std::mt19937_64 generator;// NOLINT(cert-msc51-cpp)
     return distribution(generator);
 }
 
