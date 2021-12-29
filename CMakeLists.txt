@@ -24,7 +24,8 @@ add_executable(yet_another_ray_tracer
         src/AABB.h
         src/BVH_Node.cpp src/BVH_Node.h
         src/Texture.h
-        src/stbi_image.h)
+        src/stbi_image.h
+        src/Rect.cpp src/Rect.h)
 
 target_compile_options(yet_another_ray_tracer PRIVATE -Wall -Wextra -Wpedantic)
 
