@@ -5,6 +5,10 @@
 #include "src/Material.h"
 #include "src/Timer.h"
 #include "src/MovingSphere.h"
+#include "src/Rect.h"
+#include "src/Box.h"
+#include "src/Rotate.h"
+#include "src/Translate.h"
 
 #include <iostream>
 #include <sstream>
@@ -27,18 +31,10 @@ Colour gammaCorrection(Colour c, FloatT gamma = 2){
     return { std::sqrt(c.x()), std::sqrt(c.y()), std::sqrt(c.z()) };
 }
 
-int main() {
-    const auto width  = kDebug ? 640 : 1280;
-    const auto height = kDebug ? 360 : 720;
-    const auto aspect_ratio = FloatT(width) / FloatT(height);
-    const auto samples_per_pixel = kDebug ? 100 : 3000;
-    const auto max_depth = kDebug ? 50 : 100;
-
-    auto image  = Image(width, height);
+HittableList fourBallScene(){
+    using std::make_shared;
 
     auto world = HittableList();
-
-    using std::make_shared;
 
     auto green_texture = make_shared<SolidColour>(Colour(0.3, 0.9, 0.3));
     auto blue_texture  = make_shared<SolidColour>(Colour(0.3, 0.5, 0.9));
@@ -67,24 +63,77 @@ int main() {
     world.add(make_shared<Sphere>(Point3(-1, 0,-1), 0.5, glass));
     world.add(make_shared<Sphere>(Point3( 1, 0,-1), 0.5, globe));
     world.add(make_shared<Sphere>(Point3( 2, 2, 0), 0.2, light));
-    world.add(make_shared<Sphere>(Point3(-3, 2, 0), 0.2, light));
+    world.add(make_shared<Sphere>(Point3(-3, 2, -3), 0.2, light));
     world.add(make_shared<Sphere>(Point3( 0,-100.5,-1), 100, checker));
     world.add(make_shared<MovingSphere>(Point3( 2, 0, -1), 0.5, Vec3(0, 0.5, 0), steel));
 
-    auto look_from = Point3(0.5, 1.5, 4);
-    auto look_at   = Point3(0.5, 0,  -1);
+    world.add(make_shared<XYRect>(2, 3, 2, 3, -4, light));
+    world.add(make_shared<XZRect>(0, 3, 0, 1,  0, light));
+
+    return world;
+}
+
+HittableList cornellBoxScene(){
+    using std::make_shared;
+
+    auto world = HittableList();
+
+    auto red_tex   = make_shared<SolidColour>(Colour(.65, .05, .05));
+    auto white_tex = make_shared<SolidColour>(Colour(.73, .73, .73));
+    auto green_tex = make_shared<SolidColour>(Colour(.12, .45, .15));
+    auto light_tex = make_shared<SolidColour>(Colour(15, 15, 15));
+
+    using Lambertian = Lambertian<false>;
+    auto red   = make_shared<Lambertian>(red_tex);
+    auto white = make_shared<Lambertian>(white_tex);
+    auto green = make_shared<Lambertian>(green_tex);
+    auto light = make_shared<DiffuseLight>(light_tex);
+
+    world.add(make_shared<YZRect>(0, 555, 0, 555, 555, green));
+    world.add(make_shared<YZRect>(0, 555, 0, 555, 0, red));
+    world.add(make_shared<XZRect>(213, 343, 227, 332, 554, light));
+    world.add(make_shared<XZRect>(0, 555, 0, 555, 0, white));
+    world.add(make_shared<XZRect>(0, 555, 0, 555, 555, white));
+    world.add(make_shared<XYRect>(0, 555, 0, 555, 555, white));
+
+    std::shared_ptr<Hittable> box1 = make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), white);
+    box1 = make_shared<RotateY>(box1, 15);
+    box1 = make_shared<Translate>(box1, Vec3(265, 0, 295));
+    world.add(box1);
+
+    std::shared_ptr<Hittable> box2 = make_shared<Box>(Point3(0, 0, 0), Point3(165, 165, 165), white);
+    box2 = make_shared<RotateY>(box2, -18);
+    box2 = make_shared<Translate>(box2, Vec3(130, 0, 65));
+    world.add(box2);
+
+    return world;
+}
+
+int main() {
+    const auto width  = kDebug ? 360 : 600;
+    const auto height = kDebug ? 360 : 600;
+    const auto aspect_ratio = FloatT(width) / FloatT(height);
+    const auto samples_per_pixel = kDebug ? 100 : 3000;
+    const auto max_depth = kDebug ? 50 : 100;
+
+    auto image = Image(width, height);
+
+    auto world = cornellBoxScene();
+
+    auto look_from = Point3(278, 278, -800);
+    auto look_at   = Point3(278, 278, 0);
     auto up_view   = Vec3(0, 1, 0);
     auto camera    = Camera(
             look_from,
             look_at,
             up_view,
-            45,
+            40,
             aspect_ratio,
             1/16.,
             (look_from - look_at).length(),
             0, 1);
 
-    auto background = Colour(0.3, 0.3, 0.7);
+    auto background = Colour(0, 0, 0);
 
     auto time = Timer();
 

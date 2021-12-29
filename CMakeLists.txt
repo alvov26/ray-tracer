@@ -25,7 +25,10 @@ add_executable(yet_another_ray_tracer
         src/BVH_Node.cpp src/BVH_Node.h
         src/Texture.h
         src/stbi_image.h
-        src/Rect.cpp src/Rect.h)
+        src/Rect.cpp src/Rect.h
+        src/Box.cpp src/Box.h
+        src/Translate.cpp src/Translate.h
+        src/Rotate.cpp src/Rotate.h)
 
 target_compile_options(yet_another_ray_tracer PRIVATE -Wall -Wextra -Wpedantic)
 
