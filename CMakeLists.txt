@@ -28,7 +28,9 @@ add_executable(yet_another_ray_tracer
         src/Rect.cpp src/Rect.h
         src/Box.cpp src/Box.h
         src/Translate.cpp src/Translate.h
-        src/Rotate.cpp src/Rotate.h)
+        src/Rotate.cpp src/Rotate.h
+        src/ObjModel.cpp src/ObjModel.h
+        src/tiny_obj_loader.h src/tiny_obj_loader.cpp)
 
 target_compile_options(yet_another_ray_tracer PRIVATE -Wall -Wextra -Wpedantic)
 

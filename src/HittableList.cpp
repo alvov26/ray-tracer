@@ -5,6 +5,9 @@
 #include "HittableList.h"
 
 std::optional<HitRecord> HittableList::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
+    auto box = boundingBox(0, 1);
+    if (!box->doesIntersect(ray, min_dist, max_dist)) return {};
+
     auto result = std::optional<HitRecord>{};
     auto closest_distance = kInfinity;
     for (const auto &obj : objects) {
