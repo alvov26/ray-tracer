@@ -65,6 +65,6 @@ std::optional<HitRecord> RotateY::intersect(const Ray &ray, FloatT min_dist, Flo
     return hit;
 }
 
-std::optional<AABB> RotateY::boundingBox(FloatT time0, FloatT time1) const {
+std::optional<AABB> RotateY::boundingBox(FloatT /*time0*/, FloatT /*time1*/) const {
     return aabb_;
 }

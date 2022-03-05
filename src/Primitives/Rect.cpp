@@ -27,7 +27,7 @@ std::optional<HitRecord> XYRect::intersect(const Ray &ray, FloatT min_dist, Floa
 XYRect::XYRect(FloatT x0, FloatT x1, FloatT y0, FloatT y1, FloatT k, std::shared_ptr<Material> material)
         : x0_(x0), x1_(x1), y0_(y0), y1_(y1), k_(k), material_(std::move(material)) {}
 
-std::optional<AABB> XYRect::boundingBox(FloatT time0, FloatT time1) const {
+std::optional<AABB> XYRect::boundingBox(FloatT /*time0*/, FloatT /*time1*/) const {
     return AABB(Point3(x0_, y0_, k_ - kEpsilon), Point3(x1_, y1_, k_ + kEpsilon));
 }
 
@@ -54,7 +54,7 @@ std::optional<HitRecord> XZRect::intersect(const Ray &ray, FloatT min_dist, Floa
 XZRect::XZRect(FloatT x0, FloatT x1, FloatT z0, FloatT z1, FloatT k, std::shared_ptr<Material> material)
         : x0_(x0), x1_(x1), z0_(z0), z1_(z1), k_(k), material_(std::move(material)) {}
 
-std::optional<AABB> XZRect::boundingBox(FloatT time0, FloatT time1) const {
+std::optional<AABB> XZRect::boundingBox(FloatT /*time0*/, FloatT /*time1*/) const {
     return AABB(Point3(x0_, k_ - kEpsilon, z0_), Point3(x1_, k_ + kEpsilon, z1_));
 }
 
@@ -81,6 +81,6 @@ std::optional<HitRecord> YZRect::intersect(const Ray &ray, FloatT min_dist, Floa
 YZRect::YZRect(FloatT y0, FloatT y1, FloatT z0, FloatT z1, FloatT k, std::shared_ptr<Material> material)
         : y0_(y0), y1_(y1), z0_(z0), z1_(z1), k_(k), material_(std::move(material)) {}
 
-std::optional<AABB> YZRect::boundingBox(FloatT time0, FloatT time1) const {
+std::optional<AABB> YZRect::boundingBox(FloatT /*time0*/, FloatT /*time1*/) const {
     return AABB(Point3(k_ - kEpsilon, y0_, z0_), Point3(k_ + kEpsilon, y1_, z1_));
 }

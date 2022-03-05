@@ -28,7 +28,8 @@ public:
 
             min_dist = std::max(min_dist, t0);
             max_dist = std::min(max_dist, t1);
-            if (max_dist <= min_dist) return false;
+            if (max_dist <= min_dist)
+                return false;
         }
         return true;
     }

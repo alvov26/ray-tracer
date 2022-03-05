@@ -4,9 +4,9 @@
 
 #pragma once
 
+#include "Hittable.h"
 #include <memory>
 #include <optional>
-#include "Hittable.h"
 
 class XYRect : public Hittable {
     FloatT x0_, x1_, y0_, y1_, k_;

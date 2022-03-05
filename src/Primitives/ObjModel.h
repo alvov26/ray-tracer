@@ -4,11 +4,11 @@
 
 #pragma once
 
-#include "Hittable.h"
 #include "BVH_Node.h"
+#include "Hittable.h"
 
 class ObjModel : public Hittable {
-    HittableList data_;
+    BVH_Node data_;
     std::shared_ptr<Material> material_;
 
 public:

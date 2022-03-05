@@ -6,9 +6,9 @@
 
 #include <utility>
 
+#include "../Ray.h"
+#include "../Vec3.h"
 #include "Hittable.h"
-#include "Ray.h"
-#include "Vec3.h"
 
 class MovingSphere final : public Hittable {
     Point3 center_;

@@ -6,7 +6,6 @@
 #include "Utility.h"
 #include <cmath>
 #include <cstddef>
-#include <iosfwd>
 
 class Vec3 {
     FloatT data_[3];
@@ -50,12 +49,12 @@ public:// methods
         return x() * v.x() + y() * v.y() + z() * v.z();
     }
 
-    FloatT length_squared() const {
+    FloatT lengthSquared() const {
         return dot(*this);
     }
 
     FloatT length() const {
-        return std::sqrt(length_squared());
+        return std::sqrt(lengthSquared());
     }
 
     inline Vec3 normalized() const;
@@ -99,12 +98,13 @@ Vec3 Vec3::random(FloatT min, FloatT max) {
     return {
             randomFloatT(min, max),
             randomFloatT(min, max),
-            randomFloatT(min, max)};
+            randomFloatT(min, max)
+    };
 }
 
 Vec3 Vec3::randomInSphere() {
     auto v = Vec3::random();
-    while (v.length_squared() >= 1) {
+    while (v.lengthSquared() >= 1) {
         v = Vec3::random();
     }
     return v.normalized();
@@ -115,5 +115,3 @@ Vec3 Vec3::randomInHemisphere(const Vec3 &normal) {
     if (v.dot(normal) > 0) return v;
     return -v;
 }
-
-std::ostream &operator<<(std::ostream &os, const Vec3 &v);

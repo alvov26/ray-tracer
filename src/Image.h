@@ -10,13 +10,14 @@
 
 class Pixel {
     using u_char = unsigned char;
-    u_char red, green, blue, alpha;
+    u_char red, green, blue;
+    [[maybe_unused]] u_char alpha;
 
     Pixel(u_char r, u_char g, u_char b, u_char a = 0)
         : red(r), green(g), blue(b), alpha(a) {}
 
 public:
-    static Pixel fromVec3(const Vec3 &v) {
+    static Pixel fromColour(const Vec3 &v) {
         return {
                 static_cast<u_char>(clamp(v.x(), 0, 1) * 255),
                 static_cast<u_char>(clamp(v.y(), 0, 1) * 255),
@@ -27,7 +28,7 @@ public:
         return {r, g, b};
     }
 
-    Colour toVec3() const {
+    Colour toColour() const {
         return {red / 255., green / 255., blue / 255.};
     }
 };

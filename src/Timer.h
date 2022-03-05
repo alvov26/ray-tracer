@@ -11,7 +11,7 @@ class Timer {
     decltype(system_clock::now()) start = system_clock::now();
 
 public:
-    auto seconds() const {
+    [[nodiscard]] auto seconds() const {
         auto end = system_clock::now();
         return std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
     }

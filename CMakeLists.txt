@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.21)
 project(yet_another_ray_tracer VERSION 0.1)
 
 # specify the C++ standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(yet_another_ray_tracer
@@ -12,25 +12,32 @@ add_executable(yet_another_ray_tracer
         src/stb_image_write.h
         src/Image.cpp src/Image.h
         src/Utility.h
-        src/Vec3.cpp src/Vec3.h
+        src/Vec3.h
         src/Ray.h
-        src/Sphere.cpp src/Sphere.h
-        src/Hittable.h
-        src/HittableList.cpp src/HittableList.h
+        src/Primitives/Sphere.cpp src/Primitives/Sphere.h
+        src/Primitives/Hittable.h
+        src/Primitives/HittableList.cpp src/Primitives/HittableList.h
         src/Camera.h
         src/Material.h
         src/Timer.h
-        src/MovingSphere.cpp src/MovingSphere.h
+        src/Primitives/MovingSphere.cpp src/Primitives/MovingSphere.h
         src/AABB.h
-        src/BVH_Node.cpp src/BVH_Node.h
+        src/Primitives/BVH_Node.cpp src/Primitives/BVH_Node.h
         src/Texture.h
         src/stbi_image.h
-        src/Rect.cpp src/Rect.h
-        src/Box.cpp src/Box.h
-        src/Translate.cpp src/Translate.h
-        src/Rotate.cpp src/Rotate.h
-        src/ObjModel.cpp src/ObjModel.h
-        src/tiny_obj_loader.h src/tiny_obj_loader.cpp)
+        src/Primitives/Rect.cpp src/Primitives/Rect.h
+        src/Primitives/Box.cpp src/Primitives/Box.h
+        src/Primitives/Translate.cpp src/Primitives/Translate.h
+        src/Primitives/Rotate.cpp src/Primitives/Rotate.h
+        src/Primitives/ObjModel.cpp src/Primitives/ObjModel.h
+        src/tiny_obj_loader.h src/tiny_obj_loader.cpp
+        src/ConstantMedium.cpp src/ConstantMedium.h)
+
+set_source_files_properties(
+        "src/tiny_obj_loader.h src/tiny_obj_loader.cpp src/stbi_image.h src/stb_image_write.h"
+        PROPERTIES
+        COMPILE_FLAGS "-w"
+)
 
 target_compile_options(yet_another_ray_tracer PRIVATE -Wall -Wextra -Wpedantic)
 

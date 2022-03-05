@@ -11,7 +11,7 @@ Vec3 randomVecInUnitDisk() {
     while (true) {
         auto p = Vec3::random();
         p.z() = 0;
-        if (p.length_squared() >= 1) continue;
+        if (p.lengthSquared() >= 1) continue;
         return p;
     }
 }

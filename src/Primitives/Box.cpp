@@ -24,6 +24,6 @@ std::optional<HitRecord> Box::intersect(const Ray &ray, FloatT min_dist, FloatT 
     return sides_.intersect(ray, min_dist, max_dist);
 }
 
-std::optional<AABB> Box::boundingBox(FloatT time0, FloatT time1) const {
+std::optional<AABB> Box::boundingBox(FloatT /*time0*/, FloatT /*time1*/) const {
     return AABB(min_point_, max_point_);
 }

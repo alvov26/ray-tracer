@@ -9,7 +9,7 @@ Translate::Translate(const std::shared_ptr<Hittable> &obj, const Vec3 &offset)
 
 std::optional<HitRecord> Translate::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
     auto moved_ray = Ray(ray.origin() - offset_, ray.direction(), ray.time());
-    auto hit = obj_->intersect(moved_ray);
+    auto hit = obj_->intersect(moved_ray, min_dist, max_dist);
     if (!hit) return {};
 
     hit->point = hit->point + offset_;

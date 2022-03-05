@@ -9,9 +9,9 @@ std::optional<HitRecord> MovingSphere::intersect(const Ray &ray, FloatT min_dist
     auto center = this->center(ray.time());
     auto oc = ray.origin() - center;
 
-    auto a = ray.direction().length_squared();
+    auto a = ray.direction().lengthSquared();
     auto half_b = ray.direction().dot(oc);
-    auto c = oc.length_squared() - radius_ * radius_;
+    auto c = oc.lengthSquared() - radius_ * radius_;
 
     auto discriminant = half_b * half_b - a * c;
     if (discriminant < 0) return {};

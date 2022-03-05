@@ -3,7 +3,7 @@
 //
 
 #include "ObjModel.h"
-#include "tiny_obj_loader.h"
+#include "../tiny_obj_loader.h"
 
 #include <utility>
 #include <iostream>
@@ -69,7 +69,7 @@ ObjModel::ObjModel(const std::string& filename, const std::shared_ptr<Material>&
         }
     }
 
-    data_ = std::move(triangles);
+    data_ = BVH_Node(triangles, 0, 1);
 }
 
 std::optional<HitRecord> ObjModel::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
@@ -118,14 +118,14 @@ std::optional<HitRecord> Triangle::intersect(const Ray &ray, FloatT min_dist, Fl
     return hit;
 }
 
-std::optional<AABB> Triangle::boundingBox(FloatT time0, FloatT time1) const {
+std::optional<AABB> Triangle::boundingBox(FloatT /*time0*/, FloatT /*time1*/) const {
     auto min_x = std::min({v0_.x(), v1_.x(), v2_.x()});
     auto min_y = std::min({v0_.y(), v1_.y(), v2_.y()});
     auto min_z = std::min({v0_.z(), v1_.z(), v2_.z()});
 
-    auto max_x = std::min({v0_.x(), v1_.x(), v2_.x()});
-    auto max_y = std::min({v0_.y(), v1_.y(), v2_.y()});
-    auto max_z = std::min({v0_.z(), v1_.z(), v2_.z()});
+    auto max_x = std::max({v0_.x(), v1_.x(), v2_.x()});
+    auto max_y = std::max({v0_.y(), v1_.y(), v2_.y()});
+    auto max_z = std::max({v0_.z(), v1_.z(), v2_.z()});
 
     return AABB(Vec3(min_x, min_y, min_z), Vec3(max_x, max_y, max_z));
 }

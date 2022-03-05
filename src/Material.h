@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Hittable.h"
+#include "Primitives/Hittable.h"
 #include "Ray.h"
 #include "Texture.h"
 #include "Vec3.h"
@@ -20,7 +20,7 @@ class Material {
 public:
     virtual std::optional<ScatterRecord> scatter(
             const Ray &ray, const HitRecord &hit) const = 0;
-    virtual Colour emit(FloatT u, FloatT v, const Point3 &p) const {
+    virtual Colour emit(FloatT /*u*/, FloatT /*v*/, const Point3& /*p*/) const {
         return {0, 0, 0};
     }
     virtual ~Material() = default;
@@ -45,12 +45,12 @@ public:
         }
         return ScatterRecord{
                 Ray(hit.point, scatter_direction, ray.time()),
-                albedo_->value(hit.u, hit.v, hit.point),
+                albedo_->colourAt(hit.u, hit.v, hit.point),
         };
     }
 };
 
-Vec3 reflect(const Vec3 &vec, const Vec3 &normal) {
+inline Vec3 reflect(const Vec3 &vec, const Vec3 &normal) {
     return vec - normal * 2 * vec.dot(normal);
 }
 
@@ -66,15 +66,15 @@ public:
         direction = direction + Vec3::randomInSphere() * fuzz_;
         if (direction.dot(hit.normal) > 0) return ScatterRecord{
                 Ray(hit.point, direction, ray.time()),
-                albedo_->value(hit.u, hit.v, hit.point)};
+                albedo_->colourAt(hit.u, hit.v, hit.point)};
         return {};
     }
 };
 
-Vec3 refract(const Vec3 &vec, const Vec3 &normal, FloatT refractive_ratio) {
+inline Vec3 refract(const Vec3 &vec, const Vec3 &normal, FloatT refractive_ratio) {
     auto cos_theta = std::min<FloatT>(normal.dot(-vec), 1.0);
     auto r_perp = (vec + normal * cos_theta) * refractive_ratio;
-    auto r_para = normal * -std::sqrt(std::abs(1.0 - r_perp.length_squared()));
+    auto r_para = normal * -std::sqrt(std::abs(1.0 - r_perp.lengthSquared()));
     return r_perp + r_para;
 }
 
@@ -120,11 +120,26 @@ public:
     explicit DiffuseLight(const Colour &c) : emit_(std::make_shared<SolidColour>(c)) {}
     explicit DiffuseLight(std::shared_ptr<Texture> emit) : emit_(std::move(emit)) {}
 
-    std::optional<ScatterRecord> scatter(const Ray &ray, const HitRecord &hit) const override {
+    std::optional<ScatterRecord> scatter(const Ray&, const HitRecord&) const override {
         return {};
     }
 
     Colour emit(FloatT u, FloatT v, const Point3 &p) const override {
-        return emit_->value(u, v, p);
+        return emit_->colourAt(u, v, p);
+    }
+};
+
+class Isotropic : public Material {
+    std::shared_ptr<Texture> albedo_;
+
+public:
+    Isotropic(std::shared_ptr<Texture> a) : albedo_(std::move(a)) {}
+
+
+    std::optional<ScatterRecord> scatter(const Ray &ray, const HitRecord &hit) const override {
+        return ScatterRecord {
+            Ray(hit.point, Vec3::randomInSphere(), ray.time()),
+                albedo_->colourAt(hit.u, hit.v, hit.point)
+        };
     }
 };

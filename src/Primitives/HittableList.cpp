@@ -5,12 +5,12 @@
 #include "HittableList.h"
 
 std::optional<HitRecord> HittableList::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
-    auto box = boundingBox(0, 1);
-    if (!box->doesIntersect(ray, min_dist, max_dist)) return {};
+    //auto box = boundingBox(0, 1);
+    //if (!box->doesIntersect(ray, min_dist, max_dist)) return {};
 
     auto result = std::optional<HitRecord>{};
     auto closest_distance = kInfinity;
-    for (const auto &obj : objects) {
+    for (const auto &obj : objects_) {
         auto hit = obj->intersect(ray, min_dist, max_dist);
         if (hit && hit->distance < closest_distance) {
             result = hit;
@@ -22,9 +22,9 @@ std::optional<HitRecord> HittableList::intersect(const Ray &ray, FloatT min_dist
 }
 
 std::optional<AABB> HittableList::boundingBox(FloatT time0, FloatT time1) const {
-    if (objects.empty()) return {};
+    if (objects_.empty()) return {};
     auto box = std::optional<AABB>{};
-    for (const auto &obj : objects) {
+    for (const auto &obj : objects_) {
         auto new_box = obj->boundingBox(time0, time1);
         if (!new_box) return {};
         if (!box) box = new_box;
@@ -35,5 +35,5 @@ std::optional<AABB> HittableList::boundingBox(FloatT time0, FloatT time1) const 
 }
 
 const std::vector<std::shared_ptr<Hittable>> &HittableList::getObjects() const {
-    return objects;
+    return objects_;
 }

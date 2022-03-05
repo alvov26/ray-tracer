@@ -7,9 +7,9 @@
 std::optional<HitRecord> Sphere::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
     auto oc = ray.origin() - center_;
 
-    auto a = ray.direction().length_squared();
+    auto a = ray.direction().lengthSquared();
     auto half_b = ray.direction().dot(oc);
-    auto c = oc.length_squared() - radius_ * radius_;
+    auto c = oc.lengthSquared() - radius_ * radius_;
 
     auto discriminant = half_b * half_b - a * c;
     if (discriminant < 0) return {};
@@ -37,14 +37,14 @@ std::optional<HitRecord> Sphere::intersect(const Ray &ray, FloatT min_dist, Floa
     return result;
 }
 
-std::optional<AABB> Sphere::boundingBox(FloatT time0, FloatT time1) const {
+std::optional<AABB> Sphere::boundingBox(FloatT /*time0*/, FloatT /*time1*/) const {
     return AABB{
             center_ - Vec3(radius_, radius_, radius_),
-            center_ + Vec3(radius_, radius_, radius_)};
+            center_ + Vec3(radius_, radius_, radius_)
+    };
 }
 
 std::pair<FloatT, FloatT> getSphereUV(const Vec3 &n) {
-    auto theta = std::acos(-n.x());
     auto phi = atan2(-n.z(), n.x()) + kPi;
     auto u = phi / (2 * kPi);
     auto v = asin(n.y()) / kPi + 0.5;

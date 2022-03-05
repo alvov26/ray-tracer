@@ -21,8 +21,7 @@ constexpr auto kInfinity = std::numeric_limits<FloatT>::infinity();
 constexpr auto kPi = M_PI;
 
 inline FloatT clamp(FloatT x, FloatT min, FloatT max) {
-    return x < min ? 0 : x > max ? 1
-                                 : x;
+    return x < min ? min : (x > max ? max : x);
 }
 
 inline FloatT degreesToRadians(FloatT deg) {

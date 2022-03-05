@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "AABB.h"
-#include "Ray.h"
-#include "Vec3.h"
+#include "../AABB.h"
+#include "../Ray.h"
+#include "../Vec3.h"
 #include <optional>
 
 class Material;
@@ -35,5 +35,5 @@ public:
     }
 
     virtual std::optional<AABB> boundingBox(FloatT time0, FloatT time1) const = 0;
-    ~Hittable() = default;
+    virtual ~Hittable() = default;
 };
