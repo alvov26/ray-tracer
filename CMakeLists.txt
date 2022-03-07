@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(yet_another_ray_tracer
         main.cpp
-        src/stb_image_write.h
+        external/stb_image_write.h
         src/Image.cpp src/Image.h
         src/Utility.h
         src/Vec3.h
@@ -24,14 +24,14 @@ add_executable(yet_another_ray_tracer
         src/AABB.h
         src/Primitives/BVH_Node.cpp src/Primitives/BVH_Node.h
         src/Texture.h
-        src/stbi_image.h
+        external/stbi_image.h
         src/Primitives/Rect.cpp src/Primitives/Rect.h
         src/Primitives/Box.cpp src/Primitives/Box.h
         src/Primitives/Translate.cpp src/Primitives/Translate.h
         src/Primitives/Rotate.cpp src/Primitives/Rotate.h
         src/Primitives/ObjModel.cpp src/Primitives/ObjModel.h
-        src/tiny_obj_loader.h src/tiny_obj_loader.cpp
-        src/ConstantMedium.cpp src/ConstantMedium.h)
+        external/tiny_obj_loader.h external/tiny_obj_loader.cpp
+        src/ConstantMedium.cpp src/ConstantMedium.h src/Scene.h src/Scene.cpp)
 
 set_source_files_properties(
         "src/tiny_obj_loader.h src/tiny_obj_loader.cpp src/stbi_image.h src/stb_image_write.h"

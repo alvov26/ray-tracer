@@ -36,16 +36,16 @@ RotateY::RotateY(std::shared_ptr<Hittable> obj, FloatT angle) : obj_(std::move(o
 }
 
 std::optional<HitRecord> RotateY::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
-    auto origin = ray.origin();
-    auto direction = ray.direction();
+    auto origin = ray.origin;
+    auto direction = ray.direction;
 
-    origin[0] = cos_theta_ * ray.origin()[0] - sin_theta_ * ray.origin()[2];
-    origin[2] = sin_theta_ * ray.origin()[0] + cos_theta_ * ray.origin()[2];
+    origin[0] = cos_theta_ * ray.origin[0] - sin_theta_ * ray.origin[2];
+    origin[2] = sin_theta_ * ray.origin[0] + cos_theta_ * ray.origin[2];
 
-    direction[0] = cos_theta_ * ray.direction()[0] - sin_theta_ * ray.direction()[2];
-    direction[2] = sin_theta_ * ray.direction()[0] + cos_theta_ * ray.direction()[2];
+    direction[0] = cos_theta_ * ray.direction[0] - sin_theta_ * ray.direction[2];
+    direction[2] = sin_theta_ * ray.direction[0] + cos_theta_ * ray.direction[2];
 
-    auto rotated_ray = Ray(origin, direction, ray.time());
+    auto rotated_ray = Ray{origin, direction, ray.time};
 
     auto hit = obj_->intersect(rotated_ray, min_dist, max_dist);
     if (!hit) return {};

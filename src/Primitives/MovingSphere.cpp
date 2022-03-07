@@ -6,11 +6,11 @@
 #include "Sphere.h"
 
 std::optional<HitRecord> MovingSphere::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
-    auto center = this->center(ray.time());
-    auto oc = ray.origin() - center;
+    auto center = this->center(ray.time);
+    auto oc = ray.origin - center;
 
-    auto a = ray.direction().lengthSquared();
-    auto half_b = ray.direction().dot(oc);
+    auto a = ray.direction.lengthSquared();
+    auto half_b = ray.direction.dot(oc);
     auto c = oc.lengthSquared() - radius_ * radius_;
 
     auto discriminant = half_b * half_b - a * c;

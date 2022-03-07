@@ -13,6 +13,8 @@ class HittableList final : public Hittable {
     std::vector<std::shared_ptr<Hittable>> objects_;
 
 public:
+    HittableList() = default;
+    HittableList(std::initializer_list<std::shared_ptr<Hittable>>);
     const std::vector<std::shared_ptr<Hittable>> &getObjects() const;
 
     void add(const std::shared_ptr<Hittable> &obj) {

@@ -5,7 +5,7 @@
 #include "Rect.h"
 
 std::optional<HitRecord> XYRect::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
-    auto dist = (k_ - ray.origin().z()) / ray.direction().z();
+    auto dist = (k_ - ray.origin.z()) / ray.direction.z();
     if (dist < min_dist || dist > max_dist)
         return {};
 
@@ -32,7 +32,7 @@ std::optional<AABB> XYRect::boundingBox(FloatT /*time0*/, FloatT /*time1*/) cons
 }
 
 std::optional<HitRecord> XZRect::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
-    auto dist = (k_ - ray.origin().y()) / ray.direction().y();
+    auto dist = (k_ - ray.origin.y()) / ray.direction.y();
     if (dist < min_dist || dist > max_dist)
         return {};
 
@@ -59,7 +59,7 @@ std::optional<AABB> XZRect::boundingBox(FloatT /*time0*/, FloatT /*time1*/) cons
 }
 
 std::optional<HitRecord> YZRect::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
-    auto dist = (k_ - ray.origin().x()) / ray.direction().x();
+    auto dist = (k_ - ray.origin.x()) / ray.direction.x();
     if (dist < min_dist || dist > max_dist)
         return {};
 

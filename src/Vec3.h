@@ -10,34 +10,36 @@
 class Vec3 {
     FloatT data_[3];
 
-public:// constructors
+public: // constructors
     Vec3() : data_{0, 0, 0} {}
     Vec3(FloatT x, FloatT y, FloatT z) : data_{x, y, z} {}
 
-    inline static Vec3 random(FloatT min = -1, FloatT max = 1);
-    inline static Vec3 randomInSphere();
-    inline static Vec3 randomInHemisphere(const Vec3 &normal);
+    [[nodiscard]] inline static Vec3 random(FloatT min = -1, FloatT max = 1);
+    [[nodiscard]] inline static Vec3 randomInSphere();
+    [[nodiscard]] inline static Vec3 randomInHemisphere(const Vec3 &normal);
 
-public:// const access
-    const FloatT &x() const { return data_[0]; }
-    const FloatT &y() const { return data_[1]; }
-    const FloatT &z() const { return data_[2]; }
+public: // const access
+    [[nodiscard]] FloatT x() const { return data_[0]; }
+    [[nodiscard]] FloatT y() const { return data_[1]; }
+    [[nodiscard]] FloatT z() const { return data_[2]; }
 
-    const FloatT &operator[](size_t i) const { return data_[i]; }
+    [[nodiscard]] FloatT operator[](size_t i) const { return data_[i]; }
 
 public:// non-const access
-    FloatT &x() { return data_[0]; }
-    FloatT &y() { return data_[1]; }
-    FloatT &z() { return data_[2]; }
+    [[nodiscard]] FloatT &x() { return data_[0]; }
+    [[nodiscard]] FloatT &y() { return data_[1]; }
+    [[nodiscard]] FloatT &z() { return data_[2]; }
 
-    FloatT &operator[](size_t i) { return data_[i]; }
+    [[nodiscard]] FloatT &operator[](size_t i) { return data_[i]; }
 
 public:// methods
+    [[nodiscard]]
     bool isNearZero() const {
         using std::abs;
         return abs(x()) < kEpsilon && abs(y()) < kEpsilon && abs(z()) < kEpsilon;
     }
 
+    [[nodiscard]]
     Vec3 cross(const Vec3 &v) const {
         auto new_x = y() * v.z() - z() * v.y();
         auto new_y = z() * v.x() - x() * v.z();
@@ -45,49 +47,59 @@ public:// methods
         return {new_x, new_y, new_z};
     }
 
+    [[nodiscard]]
     FloatT dot(const Vec3 &v) const {
         return x() * v.x() + y() * v.y() + z() * v.z();
     }
 
+    [[nodiscard]]
     FloatT lengthSquared() const {
         return dot(*this);
     }
 
+    [[nodiscard]]
     FloatT length() const {
         return std::sqrt(lengthSquared());
     }
 
+    [[nodiscard]]
     inline Vec3 normalized() const;
 };
 
 using Point3 = Vec3;
 using Colour = Vec3;
 
+[[nodiscard]]
 inline Vec3 operator+(Vec3 lhs, const Vec3 &rhs) {
     for (auto i : range(3)) lhs[i] += rhs[i];
     return lhs;
 }
 
+[[nodiscard]]
 inline Vec3 operator-(Vec3 lhs, const Vec3 &rhs) {
     for (auto i : range(3)) lhs[i] -= rhs[i];
     return lhs;
 }
 
+[[nodiscard]]
 inline Vec3 operator*(Vec3 lhs, const Vec3 &rhs) {
     for (auto i : range(3)) lhs[i] *= rhs[i];
     return lhs;
 }
 
+[[nodiscard]]
 inline Vec3 operator*(Vec3 lhs, FloatT rhs) {
     for (auto i : range(3)) lhs[i] *= rhs;
     return lhs;
 }
 
+[[nodiscard]]
 inline Vec3 operator/(Vec3 lhs, FloatT rhs) {
     for (auto i : range(3)) lhs[i] /= rhs;
     return lhs;
 }
 
+[[nodiscard]]
 inline Vec3 operator-(Vec3 v) {
     return v * -1;
 }

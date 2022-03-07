@@ -20,9 +20,9 @@ public:
 
     bool doesIntersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
         for (auto i : range(3)) {
-            auto invD = 1.0f / ray.direction()[i];
-            auto t0 = (min()[i] - ray.origin()[i]) * invD;
-            auto t1 = (max()[i] - ray.origin()[i]) * invD;
+            auto invD = 1.0f / ray.direction[i];
+            auto t0 = (min()[i] - ray.origin[i]) * invD;
+            auto t1 = (max()[i] - ray.origin[i]) * invD;
             if (invD < 0.0f)
                 std::swap(t0, t1);
 

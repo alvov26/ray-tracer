@@ -39,13 +39,15 @@ public:
             scatter_direction = Vec3::randomInHemisphere(hit.normal);
         } else {
             scatter_direction = hit.normal + Vec3::randomInSphere();
-            if (scatter_direction.isNearZero()) scatter_direction = hit.normal;
-            else
+            if (scatter_direction.isNearZero()) {
+                scatter_direction = hit.normal;
+            } else {
                 scatter_direction = scatter_direction.normalized();
+            }
         }
         return ScatterRecord{
-                Ray(hit.point, scatter_direction, ray.time()),
-                albedo_->colourAt(hit.u, hit.v, hit.point),
+                .ray = {hit.point, scatter_direction, ray.time},
+                .attenuation = albedo_->colourAt(hit.u, hit.v, hit.point)
         };
     }
 };
@@ -62,11 +64,14 @@ public:
     Metal(std::shared_ptr<Texture> a, FloatT fuzz) : albedo_(std::move(a)), fuzz_(fuzz < 1 ? fuzz : 1) {}
 
     std::optional<ScatterRecord> scatter(const Ray &ray, const HitRecord &hit) const override {
-        auto direction = reflect(ray.direction(), hit.normal).normalized();
+        auto direction = reflect(ray.direction, hit.normal).normalized();
         direction = direction + Vec3::randomInSphere() * fuzz_;
-        if (direction.dot(hit.normal) > 0) return ScatterRecord{
-                Ray(hit.point, direction, ray.time()),
-                albedo_->colourAt(hit.u, hit.v, hit.point)};
+        if (direction.dot(hit.normal) > 0) {
+            return ScatterRecord{
+                    .ray = {hit.point, direction, ray.time},
+                    .attenuation = albedo_->colourAt(hit.u, hit.v, hit.point)
+            };
+        }
         return {};
     }
 };
@@ -88,20 +93,21 @@ public:
     std::optional<ScatterRecord> scatter(const Ray &ray, const HitRecord &hit) const override {
         FloatT refraction_ratio = hit.front_face ? 1 / refractive_index_ : refractive_index_;
 
-        auto cos_theta = std::min<FloatT>(hit.normal.dot(-ray.direction()), 1.0);
+        auto cos_theta = std::min<FloatT>(hit.normal.dot(-ray.direction), 1.0);
         auto sin_theta = std::sqrt(1 - cos_theta * cos_theta);
 
         auto cannot_refract = sin_theta * refraction_ratio > 1;
         Vec3 scattered;
         if (cannot_refract || reflectance(cos_theta, refraction_ratio) > randomFloatT()) {// only reflect
-            scattered = reflect(ray.direction(), hit.normal);
+            scattered = reflect(ray.direction, hit.normal);
         } else {// can refract
-            scattered = refract(ray.direction(), hit.normal, refraction_ratio);
+            scattered = refract(ray.direction, hit.normal, refraction_ratio);
         }
 
         return ScatterRecord{
-                Ray(hit.point, scattered.normalized(), ray.time()),
-                Colour(1, 1, 1)};
+                .ray = {hit.point, scattered.normalized(), ray.time},
+                .attenuation = Colour(1, 1, 1)
+        };
     }
 
 private:
@@ -138,8 +144,8 @@ public:
 
     std::optional<ScatterRecord> scatter(const Ray &ray, const HitRecord &hit) const override {
         return ScatterRecord {
-            Ray(hit.point, Vec3::randomInSphere(), ray.time()),
-                albedo_->colourAt(hit.u, hit.v, hit.point)
+                .ray = {hit.point, Vec3::randomInSphere(), ray.time},
+                .attenuation = albedo_->colourAt(hit.u, hit.v, hit.point)
         };
     }
 };

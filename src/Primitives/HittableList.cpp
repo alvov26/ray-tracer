@@ -37,3 +37,4 @@ std::optional<AABB> HittableList::boundingBox(FloatT time0, FloatT time1) const 
 const std::vector<std::shared_ptr<Hittable>> &HittableList::getObjects() const {
     return objects_;
 }
+HittableList::HittableList(std::initializer_list<std::shared_ptr<Hittable>> ilist) : objects_(ilist) {}

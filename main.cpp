@@ -10,28 +10,12 @@
 #include "src/Primitives/Rotate.h"
 #include "src/Primitives/Sphere.h"
 #include "src/Primitives/Translate.h"
+#include "src/Scene.h"
 #include "src/Timer.h"
 
+#include <future>
 #include <iostream>
 #include <sstream>
-#include <future>
-
-Colour castRay(const Ray& ray, const Hittable& hittable, const Colour& background, int depth) {
-    if (depth == 0) return {0, 0, 0};
-
-    auto hit = hittable.intersect(ray);
-    if (!hit) return background;
-
-    auto emitted = hit->material->emit(hit->u, hit->v, hit->point);
-    auto scattered = hit->material->scatter(ray, *hit);
-    if (!scattered) return emitted;
-
-    return emitted + scattered->attenuation * castRay(scattered->ray, hittable, background, depth - 1);
-}
-
-Colour gammaCorrection(Colour c){
-    return { std::sqrt(c.x()), std::sqrt(c.y()), std::sqrt(c.z()) };
-}
 
 HittableList fourBallScene(){
     using std::make_shared;
@@ -210,85 +194,60 @@ HittableList finalScene() {
     return objects;
 }
 
+Scene testScene() {
+    using std::make_shared;
+
+    auto red_tex   = make_shared<SolidColour>(Colour(.65, .05, .05));
+    auto white_tex = make_shared<SolidColour>(Colour(.73, .73, .73));
+    auto green_tex = make_shared<SolidColour>(Colour(.12, .45, .15));
+    auto light_tex = make_shared<SolidColour>(Colour(15, 15, 15));
+
+    using Lambertian = Lambertian<false>;
+    auto red   = make_shared<Lambertian>(red_tex);
+    auto white = make_shared<Lambertian>(white_tex);
+    auto green = make_shared<Lambertian>(green_tex);
+    auto light = make_shared<DiffuseLight>(light_tex);
+    auto glass = make_shared<Dielectric>(1.5);
+
+    std::shared_ptr<Hittable> box1 = make_shared<Box>(Point3(0, 0, 0), Point3(165, 330, 165), white);
+    box1 = make_shared<RotateY>(box1, 15);
+    box1 = make_shared<Translate>(box1, Vec3(265, 0, 295));
+
+    auto wine_glass = make_shared<Translate>(make_shared<ObjModel>("../wine_glass.obj.obj", glass, 50), Vec3(130, -15, 65));
+
+    return Scene {
+        .world = {
+            make_shared<YZRect>(0, 555, 0, 555, 555, green),
+            make_shared<YZRect>(0, 555, 0, 555, 0, red),
+            make_shared<XZRect>(213, 343, 227, 332, 554, light),
+            make_shared<XZRect>(0, 555, 0, 555, 0, white),
+            make_shared<XZRect>(0, 555, 0, 555, 555, white),
+            make_shared<XYRect>(0, 555, 0, 555, 555, white),
+            box1,
+            wine_glass
+        },
+        .backgroundColour = Colour(0, 0, 0),
+        .cameraBuilder = {
+            .lookFrom = Point3(278, 278, -800),
+            .lookAt   = Point3(278, 278, 0),
+            .fov      = 40,
+            .aperture = 1.0 / 16.0,
+        }
+    };
+}
+
 int main() {
     const auto width  = kDebug ? 360 : 800;
     const auto height = kDebug ? 360 : 800;
-    const auto aspect_ratio = FloatT(width) / FloatT(height);
-    const auto samples_per_pixel = kDebug ? 16 : 600;
-    const auto max_depth = kDebug ? 50 : 30;
+    const auto samples_per_pixel = kDebug ? 16 : 40;
+    const auto max_depth = kDebug ? 50 : 25;
 
     auto image = Image(width, height);
+    auto scene = testScene();
 
-    auto world = finalScene();
-
-    auto look_from = Point3(278, 278, -800);
-    auto look_at   = Point3(278, 278, 0);
-    auto up_view   = Vec3(0, 1, 0);
-    auto camera    = Camera(
-            look_from,
-            look_at,
-            up_view,
-            40,
-            aspect_ratio,
-            1/16.,
-            (look_from - look_at).length(),
-            0, 1);
-
-    auto background = Colour(0, 0, 0);
-
-    auto time = Timer();
-
-    /*
-    for (auto x : range(width)) {
-        for (auto y : range(height)) {
-            auto colour = Colour();
-            for (auto s : range(samples_per_pixel)){
-                auto h = (FloatT(x) + randomFloatT()) / (width-1);
-                auto v = (FloatT(height - y) + randomFloatT()) / (height-1);
-                auto ray = camera.getRay(h, v);
-                colour = colour + castRay(ray, world, background, max_depth);
-            }
-            colour = gammaCorrection(colour / samples_per_pixel);
-            image.at(x, y) = Pixel::fromColour(colour);
-        }
-        std::clog << '\r' << x + 1 << '/' << width;
-    }
-     */
-    {
-        const auto page_count = kDebug ? 2 : 4;
-        std::vector<std::future<void>> futures;
-        auto page_size = width / page_count;
-        for (auto page : range(page_count)) {
-            futures.push_back(std::async([&](auto page_num) {
-                auto local_timer = Timer();
-                for (auto x : range(page_size * page_num, page_size * page_num + page_size)) {
-                    for (auto y : range(height)) {
-                        auto colour = Colour();
-                        for ([[maybe_unused]] auto s : range(samples_per_pixel)) {
-                            auto h = (FloatT(x) + randomFloatT()) / (width - 1);
-                            auto v = (FloatT(height - y) + randomFloatT()) / (height - 1);
-                            auto ray = camera.getRay(h, v);
-                            colour = colour + castRay(ray, world, background, max_depth);
-                        }
-                        colour = gammaCorrection(colour / samples_per_pixel);
-                        image.at(x, y) = Pixel::fromColour(colour);
-                    }
-                    if (page_num == 0) {
-                        std::stringstream status;
-                        status << '\r' << (x + 1)  << '/' << page_size;
-                        std::clog << status.str();
-                    }
-                }
-                std::stringstream message;
-                message << "\nThread " << page_num + 1 << " finished rendering in "
-                << local_timer.seconds() << " seconds\n";
-                std::clog << message.str();
-            }, page));
-        }
-    }
-
-    std::clog << "\nFinished in " << time.seconds() << " seconds";
+    auto timer = Timer();
+    renderMultiThread(4, scene, image, samples_per_pixel, max_depth);
+    std::clog << "Finished in " << timer.elapsed() << " seconds";
 
     image.writeToFile("out.jpg");
-    return 0;
-}
+};

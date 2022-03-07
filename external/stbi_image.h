@@ -2444,7 +2444,7 @@ static void stbi__idct_block(stbi_uc *out, int out_stride, short data[64])
          //    no shortcut                 0     seconds
          //    (1|2|3|4|5|6|7)==0          0     seconds
          //    all separate               -0.047 seconds
-         //    1 && 2|3 && 4|5 && 6|7:    -0.047 seconds
+         //    1 && 2|3 && 4|5 && 6|7:    -0.047 elapsed
          int dcterm = d[0]*4;
          v[0] = v[8] = v[16] = v[24] = v[32] = v[40] = v[48] = v[56] = dcterm;
       } else {

@@ -6,13 +6,15 @@
 
 #include <chrono>
 
-using std::chrono::system_clock;
 class Timer {
-    decltype(system_clock::now()) start = system_clock::now();
+    using time = std::chrono::time_point<std::chrono::system_clock>;
+    time start = std::chrono::system_clock::now();
 
 public:
-    [[nodiscard]] auto seconds() const {
+    [[nodiscard]]
+    auto elapsed() const {
+        using namespace std::chrono;
         auto end = system_clock::now();
-        return std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+        return duration_cast<seconds>(end - start).count();
     }
 };

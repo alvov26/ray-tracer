@@ -3,7 +3,7 @@
 //
 
 #include "ObjModel.h"
-#include "../tiny_obj_loader.h"
+#include "../../external/tiny_obj_loader.h"
 
 #include <utility>
 #include <iostream>
@@ -86,19 +86,19 @@ Triangle::Triangle(const Point3 &v0, const Point3 &v1, const Point3 &v2, std::sh
 std::optional<HitRecord> Triangle::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
     auto v0v1 = v1_ - v0_;
     auto v0v2 = v2_ - v0_;
-    auto pvec = ray.direction().cross(v0v2);
+    auto pvec = ray.direction.cross(v0v2);
     auto det = v0v1.dot(pvec);
 
     if (std::abs(det) < kEpsilon) return {};
 
     auto inv_det = 1 / det;
 
-    auto tvec = ray.origin() - v0_;
+    auto tvec = ray.origin - v0_;
     auto u = tvec.dot(pvec) * inv_det;
     if (u < 0 || u > 1) return {};
 
     auto qvec = tvec.cross(v0v1);
-    auto v = ray.direction().dot(qvec) * inv_det;
+    auto v = ray.direction.dot(qvec) * inv_det;
     if (v < 0 || u + v > 1) return {};
 
     auto t = v0v2.dot(qvec) * inv_det;

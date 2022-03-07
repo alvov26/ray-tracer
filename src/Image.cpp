@@ -5,10 +5,10 @@
 #include "Image.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stbi_image.h"
+#include "../external/stbi_image.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "../external/stb_image_write.h"
 
 Image::Image(size_t w, size_t h)
     : width_(w), height_(h), data_(w * h, Pixel::fromRGB(0, 0, 0)) {}

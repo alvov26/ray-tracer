@@ -27,7 +27,7 @@ std::optional<HitRecord> ConstantMedium::intersect(const Ray &ray, FloatT min_di
     if (rec1->distance < 0)
         rec1->distance = 0;
 
-    const auto ray_length = ray.direction().length();
+    const auto ray_length = ray.direction.length();
     const auto distance_inside_boundary = (rec2->distance - rec1->distance) * ray_length;
     const auto hit_distance = neg_inv_density_ * std::log(randomFloatT());
 

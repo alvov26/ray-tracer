@@ -11,7 +11,7 @@
 
 class Texture {
 public:
-    virtual Colour colourAt(FloatT u, FloatT v, const Point3 &p) const = 0;
+    virtual Colour colourAt(FloatT u, FloatT v, const Point3&) const = 0;
     virtual ~Texture() = default;
 };
 

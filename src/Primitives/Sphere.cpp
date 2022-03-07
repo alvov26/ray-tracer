@@ -5,10 +5,10 @@
 #include "Sphere.h"
 
 std::optional<HitRecord> Sphere::intersect(const Ray &ray, FloatT min_dist, FloatT max_dist) const {
-    auto oc = ray.origin() - center_;
+    auto oc = ray.origin - center_;
 
-    auto a = ray.direction().lengthSquared();
-    auto half_b = ray.direction().dot(oc);
+    auto a = ray.direction.lengthSquared();
+    auto half_b = ray.direction.dot(oc);
     auto c = oc.lengthSquared() - radius_ * radius_;
 
     auto discriminant = half_b * half_b - a * c;
